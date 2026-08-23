@@ -20,6 +20,9 @@ import sys
 import time
 from typing import Optional
 
+from dotenv import load_dotenv
+load_dotenv()  # Load .env file (ANTHROPIC_API_KEY)
+
 import anthropic
 
 from src.playbook import get_allowed_actions, get_playbook_entry, validate_action, is_fraud_case
