@@ -1,107 +1,141 @@
 # 💰 AI Revenue Recovery Agent
 
-> Razorpay AI Buildathon — Track 03: Revenue Recovery
+> **Razorpay AI Buildathon — Track 03: Revenue Recovery**  
+> Autonomous, compliance-bounded payment recovery system powered by Claude AI, deterministic guardrails, and real-time audit logging.
 
-An AI-powered agent that processes failed subscription payments, diagnoses root
-causes using Claude AI, selects compliant recovery interventions, simulates
-outcomes, and reports results with a full audit trail.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-brightgreen?style=for-the-badge&logo=render)](https://revenue-recovery-agent.onrender.com)
+[![Kaggle Dataset](https://img.shields.io/badge/Kaggle-Dataset-blue?style=for-the-badge&logo=kaggle)](https://www.kaggle.com/datasets/akshayjain1267/subscription-payment-failures-and-ai-audit-trail)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/Akshay1267/revenue-recovery-agent)
 
-## 🏗️ Architecture
+---
 
-```
-Data → Playbook → AI Agent (Claude) → Stopping Rules → Simulator → Audit Trail → Dashboard
-```
+## 🌐 Quick Links
+- 🚀 **Live Dashboard:** [https://revenue-recovery-agent.onrender.com](https://revenue-recovery-agent.onrender.com)
+- 📊 **Kaggle Dataset:** [Subscription Payment Failures & AI Recovery Audit Trail](https://www.kaggle.com/datasets/akshayjain1267/subscription-payment-failures-and-ai-audit-trail)
+- 📖 **Architecture Docs:** [docs/architecture.md](docs/architecture.md)
+- 📈 **Metrics Report:** [docs/report.md](docs/report.md)
 
-See [docs/architecture.md](docs/architecture.md) for the full architecture diagram.
+---
 
-## 📊 Results
+## 🏗️ Agentic Architecture
 
-| Metric | Value |
-|--------|-------|
-| Records processed | 60 |
-| ₹ at risk | ₹68,240 |
-| ₹ recovered | ₹22,179 |
-| Recovery rate | 32.5% |
-| Fraud safety | ✅ 0 violations |
+Unlike naive dunning scripts that blindly retry failed transactions, this agent operates on a continuous cognitive loop:
 
-## 🚀 Quick Start
+`
+┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
+│  Failed Payment │────▶│   Playbook   │────▶│   AI Agent      │
+│  State & Context│     │  (Policy)    │     │  (Claude AI)    │
+│                 │     │              │     │                 │
+│ 60 failed       │     │ Strict action│     │ Diagnoses root  │
+│ subscriptions   │     │ bounds per   │     │ cause, picks    │
+│ with history    │     │ failure code │     │ optimal action  │
+└─────────────────┘     └──────────────┘     └────────┬────────┘
+                                                      │
+                                                      ▼
+┌─────────────────┐     ┌──────────────┐     ┌─────────────────┐
+│ Live Dashboard  │◀────│  Audit Trail │◀────│ Stopping Rules  │
+│ (Streamlit Web) │     │ (Full Memory)│     │  (Supervisor)   │
+│                 │     │              │     │                 │
+│ KPIs, charts,   │     │ 100% auditable│    │ Fraud guards,   │
+│ multi-filters   │     │ compliance   │     │ max retries,    │
+└─────────────────┘     └──────────────┘     │ anti-spam caps  │
+                                             └────────┬────────┘
+                                                      │
+                                                      ▼
+                                             ┌─────────────────┐
+                                             │    Simulator    │
+                                             │                 │
+                                             │ Realistic       │
+                                             │ probabilistic   │
+                                             │ outcomes & ROI  │
+                                             └─────────────────┘
+`
 
-### Prerequisites
-- Python 3.11+
-- An Anthropic API key
+---
 
-### Installation
+## 📊 Measured Benchmark Results
 
-```bash
-# Clone the repo
-git clone <repo-url>
+| Metric | Result |
+|---|---|
+| **Total Records Processed** | 60 |
+| **Total ₹ at Risk** | **₹68,240** |
+| **Total ₹ Recovered** | **₹22,179** |
+| **Recovery Rate** | **32.5%** |
+| **Fraud Cases Auto-Retried** | **0 ✅ (100% Compliant)** |
+| **Stopping Rule Overrides** | 6 invalid retry attempts blocked |
+| **Escalated to Human Review** | 9 records |
+
+### Recovery Performance by Action
+- **smart_retry**: 44.4% success rate (₹8,588 recovered)
+- **send_update_payment_link**: 37.5% success rate (₹13,591 recovered)
+- **scalate_to_human**: Pending human review
+
+---
+
+## 🚀 Quick Start & Local Run
+
+### 1. Installation
+`ash
+git clone https://github.com/Akshay1267/revenue-recovery-agent.git
 cd revenue-recovery-agent
-
-# Install dependencies
 pip install -r requirements.txt
-```
+`
 
-### Configuration
-
-Create a `.env` file in the project root:
-
-```
+### 2. Configuration
+Create a .env file in the project root:
+`nv
 ANTHROPIC_API_KEY=your-api-key-here
-```
+`
 
-### Run the Pipeline
-
-```bash
-# Step 1: Generate synthetic data (optional — already included)
+### 3. Run Pipeline & Dashboard
+`ash
+# Step 1: Generate synthetic dataset (or use data/failed_subscriptions.csv)
 python data/generate_data.py
 
-# Step 2: Run the full recovery pipeline
+# Step 2: Run end-to-end AI batch pipeline
 python -m src.run_batch
 
-# Step 3: Launch the dashboard
+# Step 3: Launch Streamlit dashboard
 streamlit run dashboard/app.py
-```
+`
+
+---
 
 ## 📁 Project Structure
 
-```
+`
 revenue-recovery-agent/
 ├── data/
 │   ├── generate_data.py          # Synthetic dataset generator
-│   └── failed_subscriptions.csv  # Generated dataset (60 records)
+│   └── failed_subscriptions.csv  # 60 failed records benchmark
 ├── src/
-│   ├── playbook.py               # Deterministic rules engine
-│   ├── agent.py                  # Claude AI diagnosis & decision
-│   ├── simulate.py               # Probabilistic outcome simulator
-│   ├── stopping_rules.py         # Compliance enforcement
-│   └── run_batch.py              # Full pipeline orchestrator
+│   ├── playbook.py               # Deterministic rulebook (action boundaries)
+│   ├── agent.py                  # Claude AI diagnosis & decision engine
+│   ├── simulate.py               # Probabilistic recovery outcome simulator
+│   ├── stopping_rules.py         # Compliance & safety guardrails
+│   └── run_batch.py              # Full orchestrator
 ├── logs/
-│   └── audit_trail.csv           # Complete audit trail
+│   └── audit_trail.csv           # Complete compliance audit trail
 ├── dashboard/
-│   └── app.py                    # Streamlit dashboard
+│   └── app.py                    # Streamlit visual dashboard
 ├── docs/
-│   ├── architecture.md           # Architecture documentation
-│   └── report.md                 # Results report
+│   ├── architecture.md           # Deep-dive architecture design
+│   └── report.md                 # Evaluation & metrics report
 ├── requirements.txt
 ├── .env.example
 └── README.md
-```
+`
 
-## 🔒 Safety & Compliance
+---
 
-- **Fraud cases** are NEVER auto-retried — enforced in code, not just prompts
-- **LLM constrained** to playbook-allowed actions with code-level validation
-- **Stopping rules** enforce max retries, cooldowns, and daily contact limits
-- **Full audit trail** logs every decision with reasoning for compliance review
+## 🔒 Safety & Enterprise Compliance
 
-## 🛠️ Tech Stack
+1. **Deterministic Guardrails:** The LLM cannot hallucinate actions outside the predefined Playbook.
+2. **Hard Fraud Interception:** Fraud-flagged transactions never touch retries or customer communication channels.
+3. **Anti-Spam Rate Limits:** Max 1 customer notification per 24 hours.
+4. **Full Financial Auditability:** Every decision records the raw input, LLM reasoning, safety validation, and outcome.
 
-- **Python 3.11+** — Core runtime
-- **Claude AI** (claude-sonnet-4-20250514) — Diagnosis & decision engine
-- **pandas** — Data handling
-- **Streamlit + Plotly** — Interactive dashboard
-- **Anthropic SDK** — Claude API integration
+---
 
-## 📄 License
-
-Built for the Razorpay AI Buildathon.
+## 📄 License & Attribution
+Built for the **Razorpay AI Buildathon — Track 03 (Revenue Recovery)**.
