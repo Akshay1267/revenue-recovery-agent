@@ -27,5 +27,4 @@ env/
 Thumbs.db
 
 # Logs (keep the directory, ignore generated contents)
-logs/*.csv
-!logs/.gitkeep
+# logs included in repo
